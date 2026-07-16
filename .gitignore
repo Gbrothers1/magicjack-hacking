@@ -1,0 +1,8 @@
+*.o
+
+# but keep recovered dumps — they're the deliverable, not build output
+
+# OS cruft
+.DS_Store
+03-magicjack-sip/backups/
+**/__pycache__/

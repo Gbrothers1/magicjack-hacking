@@ -1,0 +1,32 @@
+# magicJack USB (TigerJet 06e6:c200, DevType 8 ARM) — ARM control-register baseline
+# Captured 2026-07-15 with tools/tj_dumpregs.py (CTjIpDev::DumpRegistersARM replay, read-only).
+# State as-found: line=ON (bit0), on-hook, ring off, polarity normal, dial-tone off, dtmf-mute off.
+# This is the reference snapshot to diff against for on-hook/off-hook/ring/audio state changes
+# (run `sudo python3 tools/tj_dumpregs.py --watch` and lift/replace the handset / ring).
+#
+  0x00 = 0x00000001   reg0  bit0=power bits8-9=ring bit16=polarity
+  0x04 = 0x256a32a0
+  0x08 = 0x7d003e80   (packs legacy codec block 0x33=7d/0x31=3e/0x30=80 — composite reg)
+  0x0c = 0x14500190
+  0x10 = 0x00000014
+  0x14 = 0x0a000104   reg14 bit31=hook bit9=dialtone bit7=strobe bit4=dtmf-mute
+  0x18 = 0x01400199
+  0x1c = 0x00000800
+  0x20 = 0x1f400199
+  0x24 = 0x0f0e0f66
+  0x28 = 0x66bc0001
+  0x2c = 0xffce0032
+  0x30 = 0x000001e0
+  0x34 = 0x00060000   (GPIO/status — meaning TBD, diff across states)
+  0x38 = 0x00000007   codec/master-clock (=3/7 when line up)
+  0x3c = 0x00000000
+  0x40 = 0x010044c0   digital-loopback (bit4=0 here → loopback off)
+  0x44 = 0xfff10018
+  0x48 = 0xc2000004
+  0x4c = 0x00000000
+  0x50 = 0x00000000
+  0x54 = 0x00000ffc
+  0x58 = 0x7da380e7   legacy AFE 0x32 (6-bit field)
+  0x5c = 0x7d20afed   legacy AFE 0x33 (6-bit field)
+  0xf0 = 0x00000000   WiFi mailbox (absent on c200)
+# decoded: line=ON  ring=off  polarity=normal  hook=on-hook  dialtone=off  dtmf-mute=off

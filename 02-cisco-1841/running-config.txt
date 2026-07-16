@@ -1,0 +1,86 @@
+!
+! Cisco 1841 running-config (== startup-config; saved via `write memory`)
+! Pulled 2026-07-10 via console (/dev/ttyS0, 9600 8N1)
+! 2026-07-12: added `ip nat outside source static <pbx-ip> 216.234.65.40`
+!   — permanent MagicJack SIP redirect (ATA's proxy 216.234.65.40 -> our Asterisk
+!     <pbx-ip>); replaces the fragile OpenWrt conntrack redirect. Saved to NVRAM.
+! IOS 12.3(11)YZ2 ADVIPSERVICESK9  |  board ID FTX121120HJ
+!
+version 12.3
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname Router
+!
+boot-start-marker
+boot-end-marker
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+no aaa new-model
+ip subnet-zero
+ip cef
+!
+!
+ip dhcp excluded-address <router-lan-ip> <lan-ip>
+!
+ip dhcp pool LAN
+   network <lan-subnet> 255.255.255.0
+   default-router <router-lan-ip>
+   dns-server 8.8.8.8 1.1.1.1
+!
+!
+ip ips po max-events 100
+!
+no crypto isakmp ccm
+!
+interface FastEthernet0/0
+ description LAN
+ ip address <router-lan-ip> 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ description UPLINK to OpenWrt (DHCP client)
+ ip address dhcp
+ ip nat outside
+ ip virtual-reassembly
+ duplex auto
+ speed auto
+!
+interface Serial0/0/0
+ no ip address
+ shutdown
+!
+ip classless
+!
+!
+no ip http server
+no ip http secure-server
+ip nat inside source list 1 interface FastEthernet0/1 overload
+ip nat outside source static <pbx-ip> 216.234.65.40
+!
+access-list 1 permit <lan-subnet> 0.0.0.255
+!
+control-plane
+!
+line con 0
+line aux 0
+ exec-timeout 0 0
+ modem InOut
+ no exec
+ transport preferred none
+ transport input all
+ stopbits 1
+ speed 115200
+ flowcontrol hardware
+line vty 0 4
+ login
+!
+end

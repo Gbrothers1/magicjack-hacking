@@ -1,0 +1,22 @@
+Cisco IOS Software, 1841 Software (C1841-ADVIPSERVICESK9-M), Version 12.3(11)YZ2, RELEASE SOFTWARE (fc2)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2007 by Cisco Systems, Inc.
+Compiled Wed 08-Aug-07 19:58 by dchih
+
+ROM: System Bootstrap, Version 12.4(13r)T, RELEASE SOFTWARE (fc1)
+
+Router uptime is 20 hours, 7 minutes
+System returned to ROM by power-on
+System image file is "flash:c1841-advipservicesk9-mz.123-11.YZ2.bin"
+
+Cisco 1841 (revision 7.0) with 117760K/13312K bytes of memory.
+Processor board ID FTX121120HJ
+2 FastEthernet interfaces
+1 Serial interface
+1 Virtual Private Network (VPN) Module
+WIC T1-DSU
+DRAM configuration is 64 bits wide with parity disabled.
+191K bytes of NVRAM.
+31360K bytes of ATA CompactFlash (Read/Write)
+
+Configuration register is 0x2142 (will be 0x2102 at next reload)

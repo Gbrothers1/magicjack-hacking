@@ -1,0 +1,31 @@
+# SoC peripheral snapshot — magicJack Plus c200 ARM SoC, port UNPOWERED (softphone mode)
+# Read via tj_armmem.py memory port (cmd 0x80 / sub-reg 0x0e). 4-byte words, little-endian.
+# This is the BASELINE for the line-power register hunt: diff against a powered snapshot to
+# find which register(s) change when the FXS line is energised.
+
+### 0x98100000 (GPIO / pin-mux / misc config)
+  98100000: 03f10200 03ff0e0c 10320100 00000000
+  98100010: 188b0000 00020000 00002080 0000000d
+  98100020: 01000000 00004080 0007017b c39f0f90
+  98100030: 43030303 00000000 00000000 00000000
+  98100040: 64010301 00000303 00000000 00000000
+  98100050: 0000a27f ffffffff 0000a27f ffffffff
+  98100060: 807ffb7f e07bfb6f 807ffb7f e07bfb6f
+  98100070: 00000000 00000000 00000000 00000000
+
+### 0x98700000 (timer / watchdog — note 16-byte register bank repeats every 0x20)
+  98700000: 0055f31f 005b8d80 00000000 00000000
+  98700010: 00000000 00000000 000000ff 00010602
+  98700020: 0055f31f 005b8d80 00000000 00000000
+  98700030: 00000000 00000000 000000ff 00010602
+  98700040: 0055f31f 005b8d80 00000000 00000000
+  98700050: 00000000 00000000 000000ff 00010602
+  98700060: 0055f31f 005b8d80 00000000 00000000
+  98700070: 00000000 00000000 000000ff 00010602
+
+# NOTES
+# - 0x987000x4 = 0x005b8d80 (6,000,000) is a timer reload; the watchdog reboot in _RebootTj880
+#   writes 0x98700004/8/c — so this bank is the timer/WDT block. DO NOT write it blind.
+# - 0x98100060 = 0x807ffb7f matches the value _ReadAddress returned in the first probe. Stable.
+# - Unmapped bases (>=0x10000000 except 0x98xxxxxx) STALL and latch the endpoint; a USB reset
+#   recovers. Only the 0x0-0x1000000 RAM/ROM and 0x98xxxxxx peripheral windows are safe to read.

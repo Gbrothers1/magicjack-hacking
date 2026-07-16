@@ -1,0 +1,18 @@
+[Unit]
+# Reference unit. setup.sh generates the working copy (real service user + config dir).
+Description=magicJack USB FXS softphone (baresip, native 8kHz ulaw over the TigerJet card)
+After=network.target sound.target
+Wants=network.target
+
+[Service]
+Type=simple
+# Must be a user in the "audio" group (baresip needs the sound card).
+User=REPLACE_WITH_A_USER_IN_THE_AUDIO_GROUP
+Group=audio
+SupplementaryGroups=audio
+ExecStart=/usr/bin/baresip -f /etc/magicjack-fxs/baresip
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

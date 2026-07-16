@@ -1,0 +1,20 @@
+# TigerJet 06e6:c200 — GET_FEATURE page windows (read via hidraw1, report id 0).
+# Page selected by SET_FEATURE "04 <x> <page> 00" (byte3 = page). Deterministic & stable.
+# These are the 64-byte status/register mirror per page. Register-write format still unsolved,
+# so offset->register mapping within a page is not fully confirmed (codec regs 0x30-0x33 appear
+# to mirror in page-0x00 at offsets 0x08-0x0B = 80 3e 00 7d).
+
+PAGE 0x00:
+  00: 00 00 00 00 a0 32 6a 25 80 3e 00 7d 90 01 50 14
+  10: 14 00 00 00 04 01 00 00 99 01 40 01 00 08 00 00
+  20: 99 01 40 1f 66 0f 0e 0f 01 00 ff ff f4 01 0c fe
+  30: f4 01 00 00 00 00 05 00 83 00 00 00 00 00 00 00
+
+PAGE 0x20:
+  00: 99 01 40 1f 66 0f 0e 0f 01 00 ff ff f4 01 0c fe  (first 16 bytes)
+
+PAGE 0x40:
+  00: c0 44 00 01 04 00 f0 ff 04 00 00 c2 00 00 00 00  (first 16 bytes)
+
+# Interesting decoded 16-bit LE values in page 0x00: 0x0190=400, 0x01f4=500, 0x0199=409,
+# 0x0140=320 — look like DSP/PLL/timer coefficients (a status struct, not a flat register file).
