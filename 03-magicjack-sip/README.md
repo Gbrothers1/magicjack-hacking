@@ -96,6 +96,11 @@ voice-pack dir (`"$(readlink -f /usr/share/asterisk/sounds/en)/custom/"`), **not
 
 ## How the redirect works (full data path)
 
+> **Just want to set it up on your own router?** → **[`REDIRECT.md`](REDIRECT.md)** is a
+> router-agnostic, copy-paste guide (iptables, nftables, OpenWrt, Cisco IOS,
+> pfSense/OPNsense, or any router — it comes down to two rules). The sections below are
+> the background for *why* it works.
+
 The MagicJack ATA is an ordinary SIP device that just happens to ship pointed at
 MagicJack's cloud. We move it onto our own PBX with a pure **network redirect** —
 the device firmware is never touched, reflashed, or modified.
@@ -227,6 +232,8 @@ device back.
 
 ## Related
 
+- `REDIRECT.md` — **router-agnostic setup guide** for the SIP redirect (iptables /
+  nftables / OpenWrt / Cisco / pfSense / any router). Start here to do it yourself.
 - `README-fxs-usb.md` — the USB-FXS handset (ext 200) wired into this PBX.
 - `../06-magicjack-usb-tigerjet/` — the TigerJet USB reverse-engineering behind it.
 - `../02-cisco-1841/` — the 1841 router that hosts the redirect.

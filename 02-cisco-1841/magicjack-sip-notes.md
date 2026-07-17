@@ -83,6 +83,10 @@ a=sendrecv
 5. To actually place PSTN calls, add an upstream trunk; SIP↔SIP works out of the box.
 
 ## Redirecting the ATA to our server (it uses hardcoded IPs)
+> **Setting this up yourself?** See the router-agnostic step-by-step in
+> [`../03-magicjack-sip/REDIRECT.md`](../03-magicjack-sip/REDIRECT.md). The notes below
+> are the reverse-engineering behind it.
+
 **Option A — DNAT (no device change, recommended).** On OpenWrt:
 ```
 # signaling

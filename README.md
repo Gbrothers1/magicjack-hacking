@@ -51,6 +51,9 @@ is presented as a **standard SIP endpoint** (baresip is a plain SIP client; noth
 touches your PBX). You just create a normal ulaw/alaw extension with the username + password you gave
 the installer.
 
+- Want to point the **networked** magicJack at your own PBX (the SIP "hijack")?
+  → [`03-magicjack-sip/REDIRECT.md`](03-magicjack-sip/REDIRECT.md) — a router-agnostic,
+  copy-paste redirect guide (iptables / nftables / OpenWrt / Cisco / pfSense / any router).
 - Want to understand *how* it works, or do it from scratch by hand?
   → [`06-magicjack-usb-tigerjet/REPRODUCE.md`](06-magicjack-usb-tigerjet/REPRODUCE.md)
 - Want the integration internals (baresip ↔ bridge daemon ↔ registers)?
@@ -123,7 +126,7 @@ and a complete map of the **USB-vs-ATA "mode gate."** See
 | # | The move | Result |
 |---|----------|--------|
 | **A** | **Capture the ATA's SIP** by packet-sniffing it through the lab router | Learned the magicJack registers with a simple `user@domain`, **no password**, G.711 audio |
-| **B** | **Self-host that SIP** in [Asterisk](https://www.asterisk.org/) | The networked magicJack now registers to **my** PBX instead of magicJack's cloud — keeps its number, runs entirely on my infrastructure |
+| **B** | **Self-host that SIP** in [Asterisk](https://www.asterisk.org/) and **redirect the device to it** ([router-agnostic how-to](03-magicjack-sip/REDIRECT.md)) | The networked magicJack now registers to **my** PBX instead of magicJack's cloud — keeps its number, runs entirely on my infrastructure |
 | **C** | **Reverse-engineer the USB personality** from the macOS driver binary | Drove the analog phone port **entirely from Linux** — dial tone, ring, hook, DTMF, two-way audio — over an undocumented register protocol, no Windows/Mac app |
 | **D** | **Wire the USB handset into Asterisk** as a real extension (200) | A physical phone on the magicJack now behaves like any PBX phone: dial out, ring on inbound, two-way voice |
 
