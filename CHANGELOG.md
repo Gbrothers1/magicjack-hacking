@@ -5,6 +5,20 @@ this is the "what happened when" overview. Dates are the working dates for each 
 
 ---
 
+## 2026-07-17 — docs: router-agnostic SIP redirect guide
+
+- Added [`03-magicjack-sip/REDIRECT.md`](03-magicjack-sip/REDIRECT.md) — a standalone,
+  **router-agnostic** how-to for pointing the networked magicJack ATA at your own PBX.
+  It distills the redirect down to **two universal rules** (destination rewrite always;
+  source NAT / hairpin only when the PBX shares the ATA's LAN), then gives copy-paste
+  recipes for **iptables, nftables, OpenWrt/fw4, Cisco IOS, and pfSense/OPNsense** plus a
+  "translate it to any router" fallback, a `pjsip.conf` `match=` guide, verification, and
+  a troubleshooting table.
+- Cross-linked it from the top-level `README.md`, `03-magicjack-sip/README.md`,
+  `cutover.sh`, and the RE notes in `02-cisco-1841/magicjack-sip-notes.md`. No behavior
+  change — documentation only, consolidating redirect instructions that were previously
+  scattered and tied to the lab's specific Cisco 1841 + OpenWrt gear.
+
 ## 2026-07-16 — deep RE: new primitives, full flash dump, config crypto, firmware unpack, mode gate
 
 A second wave of reverse-engineering went well past the working FXS station. Full write-ups in

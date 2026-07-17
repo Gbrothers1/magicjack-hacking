@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # GO LIVE — redirect the MagicJack ATA's SIP to our Asterisk.
 #
+# This is the OpenWrt-specific recipe. For the router-agnostic explanation
+# (iptables / nftables / Cisco / pfSense / any router) see REDIRECT.md.
+#
 # The ATA sends SIP to MagicJack's proxy 216.234.65.40:5070. This adds two
 # nftables rules on the OpenWrt gateway (fw4):
 #   * DNAT  : rewrite that destination to our Asterisk <pbx-ip>:5070
