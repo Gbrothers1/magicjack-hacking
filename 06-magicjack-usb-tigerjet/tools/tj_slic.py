@@ -80,7 +80,8 @@ class Slic(TjLine):
             time.sleep(0.002)
             s._set([0x04, 0x20, 0x20, 0x00])
             w = s._get()
-            if not (w[9] & 1): break
+            if not (w[9] & 1):
+                break
         s._set([0x04, 0x00, 0x00, 0x00])
         w0 = s._get()
         return w[6], w[7], w[8], w[9], w0[0x12]
@@ -140,7 +141,7 @@ def main():
         elif cmd == 'init':
             if '--yes' not in sys.argv:
                 print("init WRITES TJ regs 0x00,0x12,0x13,0x22-0x25,0x29 (tjctl.c init_hardware, volatile).\n"
-                      "Run `tjdump` first and save its output; re-run with --yes to proceed.");
+                      "Run `tjdump` first and save its output; re-run with --yes to proceed.")
                 return
             print("--- before init ---")
             t.tj_dump()
