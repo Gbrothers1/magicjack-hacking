@@ -30,7 +30,8 @@ a = ap.parse_args()
 def find_card():
     for line in open('/proc/asound/cards'):
         m = re.match(r'\s*(\d+)\s*\[TigerJet', line)
-        if m: return int(m.group(1))
+        if m:
+            return int(m.group(1))
     sys.exit("TigerJet card not found")
 
 
@@ -39,8 +40,8 @@ dev = f"plughw:{card},0"
 
 TONE = "/tmp/tj_tone.wav"
 with wave.open(TONE, 'wb') as w:
-    w.setnchannels(1);
-    w.setsampwidth(2);
+    w.setnchannels(1)
+    w.setsampwidth(2)
     w.setframerate(8000)
     w.writeframes(array.array('h', [int(12000 * math.sin(2 * math.pi * 1000 * i / 8000))
                                     for i in range(8000 * (a.secs + 2))]).tobytes())
@@ -48,10 +49,11 @@ with wave.open(TONE, 'wb') as w:
 
 def stats(path):
     with wave.open(path) as w:
-        d = array.array('h');
+        d = array.array('h')
         d.frombytes(w.readframes(w.getnframes()))
-    if not d: return "EMPTY file"
-    peak = max(abs(x) for x in d);
+    if not d:
+        return "EMPTY file"
+    peak = max(abs(x) for x in d)
     rms = math.sqrt(sum(x * x for x in d) / len(d))
     return f"{len(d)} samples, peak={peak}, rms={rms:.1f}, nonzero={sum(1 for x in d if x)}"
 
@@ -76,12 +78,14 @@ def record(label, play):
     for s in stream_state(): print("  stream:", s)
     rec.wait()
     if pl:
-        pl.terminate();
+        pl.terminate()
         pl.wait()
         err = pl.stderr.read().decode().strip()
-        if err: print("  aplay:", err)
+        if err:
+            print("  aplay:", err)
     err = rec.stderr.read().decode().strip()
-    if err: print("  arecord:", err)
+    if err:
+        print("  arecord:", err)
     print("  ->", stats(path) if os.path.exists(path) else "no file")
 
 
@@ -95,7 +99,7 @@ try:
     if a.activate:
         print("\nReplaying Windows activation sequence ...")
         for reg, val in [(0x00, 0xC0), (0x02, 0x20)]:
-            t.tj_wr(reg, [val]);
+            t.tj_wr(reg, [val])
             time.sleep(0.01)
         for off in range(0, 128, 16):
             t.tj_wr(0x57 + off, [0] * 16)
