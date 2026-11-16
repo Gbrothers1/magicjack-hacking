@@ -26,31 +26,41 @@ RLEN=65
 def find_hidraw():
     for u in glob.glob('/sys/class/hidraw/hidraw*/device/uevent'):
         try:
-            if '06E6:0000C200' in open(u).read(): return '/dev/'+u.split('/')[4]
+            if '06E6:0000C200' in open(u).read():
+                return '/dev/'+u.split('/')[4]
         except Exception: pass
     return '/dev/hidraw1'
 
 def feature_len(node):
     """Feature-report payload size (bytes) from the HID report descriptor: `95 NN ... b1 00`.
+
     ARM units (bcdDevice 0.08) = 64; older non-ARM units (bcdDevice 0.01) = 32.
     A wrong size makes the device STALL the SET_REPORT (EPIPE)."""
     try:
-        d=open('/sys/class/hidraw/%s/device/report_descriptor'%os.path.basename(node),'rb').read()
-        i=d.rfind(b'\xb1\x00')
-        if i>=2 and d[i-2]==0x95: return d[i-1]
+        node_base = os.path.basename(node)
+        hid = f'/sys/class/hidraw/{node_base}/device/report_descriptor'
+        d = open(hid,'rb').read()
+        i = d.rfind(b'\xb1\x00')
+        if i >= 2 and d[i - 2] == 0x95:
+            return d[i - 1]
     except Exception: pass
     return 64
 
 class TjLine:
     def __init__(s):
-        s.node=find_hidraw(); s.fd=os.open(s.node, os.O_RDWR)
-        s.rlen=feature_len(s.node)+1      # +1 for report-id byte
-        s.ring_mask=int(os.environ.get('TJ_RING_MASK','0x300'),0)   # reg0 bits that request ringing
+        s.node = find_hidraw()
+        s.fd = os.open(s.node, os.O_RDWR)
+        s.rlen = feature_len(s.node) + 1 # +1 for report-id byte
+        s.ring_mask = int(os.environ.get('TJ_RING_MASK','0x300'), 0) # reg0 bits that request ringing
     def close(s): os.close(s.fd)
     def _set(s,data):
-        b=bytearray(s.rlen); b[1:1+len(data)]=bytes(data); fcntl.ioctl(s.fd,HIDIOCSFEATURE(s.rlen),b,True)
+        b = bytearray(s.rlen)
+        b[1:1+len(data)] = bytes(data)
+        fcntl.ioctl(s.fd, HIDIOCSFEATURE(s.rlen), b, True)
     def _get(s):
-        b=bytearray(s.rlen); fcntl.ioctl(s.fd,HIDIOCGFEATURE(s.rlen),b,True); return bytes(b[1:])
+        b = bytearray(s.rlen)
+        fcntl.ioctl(s.fd, HIDIOCGFEATURE(s.rlen), b, True)
+        return bytes(b[1:])
     def rd(s,reg):
         s._set([0x00,0x00,reg&0xff,0x00]); time.sleep(0.002); return int.from_bytes(s._get()[0:4],'little')
     def wr(s,reg,val):
