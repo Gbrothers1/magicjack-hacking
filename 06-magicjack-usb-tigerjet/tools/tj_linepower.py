@@ -30,13 +30,27 @@ def find_hidraw():
         except Exception: pass
     return '/dev/hidraw1'
 
+def feature_len(node):
+    """Feature-report payload size (bytes) from the HID report descriptor: `95 NN ... b1 00`.
+    ARM units (bcdDevice 0.08) = 64; older non-ARM units (bcdDevice 0.01) = 32.
+    A wrong size makes the device STALL the SET_REPORT (EPIPE)."""
+    try:
+        d=open('/sys/class/hidraw/%s/device/report_descriptor'%os.path.basename(node),'rb').read()
+        i=d.rfind(b'\xb1\x00')
+        if i>=2 and d[i-2]==0x95: return d[i-1]
+    except Exception: pass
+    return 64
+
 class TjLine:
-    def __init__(s): s.fd=os.open(find_hidraw(), os.O_RDWR)
+    def __init__(s):
+        s.node=find_hidraw(); s.fd=os.open(s.node, os.O_RDWR)
+        s.rlen=feature_len(s.node)+1      # +1 for report-id byte
+        s.ring_mask=int(os.environ.get('TJ_RING_MASK','0x300'),0)   # reg0 bits that request ringing
     def close(s): os.close(s.fd)
     def _set(s,data):
-        b=bytearray(RLEN); b[1:1+len(data)]=bytes(data); fcntl.ioctl(s.fd,HIDIOCSFEATURE(RLEN),b,True)
+        b=bytearray(s.rlen); b[1:1+len(data)]=bytes(data); fcntl.ioctl(s.fd,HIDIOCSFEATURE(s.rlen),b,True)
     def _get(s):
-        b=bytearray(RLEN); fcntl.ioctl(s.fd,HIDIOCGFEATURE(RLEN),b,True); return bytes(b[1:])
+        b=bytearray(s.rlen); fcntl.ioctl(s.fd,HIDIOCGFEATURE(s.rlen),b,True); return bytes(b[1:])
     def rd(s,reg):
         s._set([0x00,0x00,reg&0xff,0x00]); time.sleep(0.002); return int.from_bytes(s._get()[0:4],'little')
     def wr(s,reg,val):
